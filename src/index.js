@@ -13,38 +13,33 @@ const teamRoutes = require('./routes/teams');
 const app = express();
 
 /**
- * CORS CONFIG
- * Allow local frontend + Vercel deployment
+ * TEMP CORS CONFIG (Frontend not deployed yet)
+ * Allow all origins during backend testing & Render deployment
  */
-const allowedOrigins = [
-  'http://localhost:5173',
-  process.env.FRONTEND_URL // will be your Vercel site
-];
-
 app.use(
   cors({
-    origin: function (origin, callback) {
-      if (!origin) return callback(null, true); // allow tools like Postman
-      if (allowedOrigins.includes(origin)) return callback(null, true);
-      return callback(new Error('CORS blocked: ' + origin));
-    },
+    origin: '*',
     credentials: false
   })
 );
 
+// Body parser
 app.use(express.json());
 
+// Health route
 app.get('/', (req, res) => {
   res.json({ message: 'HRMS API running' });
 });
 
+// API routes
 app.use('/api/auth', authRoutes);
 app.use('/api/employees', employeeRoutes);
 app.use('/api/teams', teamRoutes);
 
-// central error handler
+// Error handler
 app.use(errorHandler);
 
+// Server start
 const PORT = process.env.PORT || 5000;
 
 sequelize
