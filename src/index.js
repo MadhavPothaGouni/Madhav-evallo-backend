@@ -1,3 +1,4 @@
+// src/index.js
 const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
@@ -13,33 +14,30 @@ const teamRoutes = require('./routes/teams');
 const app = express();
 
 /**
- * TEMP CORS CONFIG (Frontend not deployed yet)
- * Allow all origins during backend testing & Render deployment
+ * TEMP CORS CONFIG
+ * Frontend is only running locally right now.
+ * For now we allow all origins. We'll tighten this after Vercel deploy.
  */
 app.use(
   cors({
-    origin: '*',
-    credentials: false
+    origin: '*',        // 👈 open for now
+    credentials: false, // we’re not using cookies
   })
 );
 
-// Body parser
 app.use(express.json());
 
-// Health route
 app.get('/', (req, res) => {
   res.json({ message: 'HRMS API running' });
 });
 
-// API routes
 app.use('/api/auth', authRoutes);
 app.use('/api/employees', employeeRoutes);
 app.use('/api/teams', teamRoutes);
 
-// Error handler
+// central error handler
 app.use(errorHandler);
 
-// Server start
 const PORT = process.env.PORT || 5000;
 
 sequelize
