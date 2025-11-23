@@ -12,10 +12,23 @@ const teamRoutes = require('./routes/teams');
 
 const app = express();
 
+/**
+ * CORS CONFIG
+ * Allow local frontend + Vercel deployment
+ */
+const allowedOrigins = [
+  'http://localhost:5173',
+  process.env.FRONTEND_URL // will be your Vercel site
+];
+
 app.use(
   cors({
-    origin: 'http://localhost:5173', 
-    credentials: false,
+    origin: function (origin, callback) {
+      if (!origin) return callback(null, true); // allow tools like Postman
+      if (allowedOrigins.includes(origin)) return callback(null, true);
+      return callback(new Error('CORS blocked: ' + origin));
+    },
+    credentials: false
   })
 );
 
